@@ -11,7 +11,7 @@ Let's change the text that's currently instructing us to "Open up App.js to star
 
 Change your code according to the following example. Throughout the tutorial, any important code or code that has changed between examples will be <Highlight>highlighted in yellow</Highlight>. You can hover over the highlights (on desktop) or tap them (on mobile) to see more context on the change.
 
-<SnackInline label="Updated text">
+<!-- <SnackInline label="Updated text"> -->
 
 <!-- prettier-ignore -->
 ```js
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-</SnackInline>
+<!-- </SnackInline> -->
 
 <br/>
 
