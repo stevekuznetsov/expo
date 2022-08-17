@@ -61,6 +61,7 @@ const starting = [
         makePage('tutorial/layout.md'),
         makePage('tutorial/image-picker.md'),
         makePage('tutorial/create-a-modal.md'),
+        makePage('tutorial/gestures.md'),
         makePage('tutorial/text.md'),
         makePage('tutorial/image.md'),
         makePage('tutorial/button.md'),
