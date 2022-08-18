@@ -28,7 +28,7 @@ public final class AppContext: NSObject {
   /**
    The legacy module registry with modules written in the old-fashioned way.
    */
-  internal weak var legacyModuleRegistry: EXModuleRegistry?
+  public weak var legacyModuleRegistry: EXModuleRegistry?
 
   internal weak var legacyModulesProxy: LegacyNativeModulesProxy?
 
@@ -77,6 +77,23 @@ public final class AppContext: NSObject {
     moduleRegistry.register(fromProvider: provider)
     return self
   }
+
+  // MARK: - UI
+
+  public func findView<ViewType>(withTag viewTag: Int, ofType type: ViewType.Type) -> ViewType? {
+    let view: UIView? = reactBridge?.uiManager.view(forReactTag: NSNumber(value: viewTag))
+    return view as? ViewType
+  }
+
+  public func runOnMainThread<ViewType>(viewTag: Int, _ block: @escaping (ViewType?) -> Void) {
+    reactBridge?.uiManager.addUIBlock({ uiManager, viewRegistry in
+      // We intentionally don't use `viewRegistry` here — it's not available in Fabric.
+      let view = self.findView(withTag: viewTag, ofType: ViewType.self)
+      block(view)
+    })
+  }
+
+  // MARK: - Legacy modules
 
   /**
    Returns a legacy module implementing given protocol/interface.

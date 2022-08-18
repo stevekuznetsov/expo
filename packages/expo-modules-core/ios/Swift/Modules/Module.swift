@@ -15,6 +15,17 @@ open class BaseModule {
     self.appContext = appContext
   }
 
+  // MARK: - UI
+
+  public func runOnMainThread<ViewType>(viewTag: Int, _ block: @escaping (ViewType?) -> Void) throws {
+    guard let appContext = appContext else {
+      throw AppContextLostException()
+    }
+    appContext.runOnMainThread(viewTag: viewTag, block)
+  }
+
+  // MARK: - Events
+
   /**
    Sends an event with given name and body to JavaScript.
    */
