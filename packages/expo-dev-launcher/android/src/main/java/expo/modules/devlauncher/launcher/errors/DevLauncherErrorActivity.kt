@@ -59,6 +59,8 @@ class DevLauncherErrorActivity :
       adapter.notifyDataSetChanged()
     }
     binding.errorDetails.text = error.message ?: "Unknown error"
+
+    throw Exception("test exception eric")
   }
 
   private fun launchHome() {

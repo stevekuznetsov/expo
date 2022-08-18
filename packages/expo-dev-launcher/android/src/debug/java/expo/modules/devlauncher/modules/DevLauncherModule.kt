@@ -1,7 +1,10 @@
 package expo.modules.devlauncher.modules
 
+import android.os.AsyncTask
+import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
 import expo.modules.devlauncher.koin.DevLauncherKoinComponent
 import expo.modules.devlauncher.koin.optInject
 import expo.modules.devlauncher.launcher.DevLauncherControllerInterface
@@ -29,5 +32,12 @@ class DevLauncherModule(reactContext: ReactApplicationContext?) : ReactContextBa
       "manifestString" to manifestString,
       "manifestURL" to manifestURLString
     )
+  }
+
+  @ReactMethod
+  fun throwException(promise: Promise) {
+    AsyncTask.execute {
+      throw Exception("Hey eric throw exception from thread")
+    }
   }
 }
