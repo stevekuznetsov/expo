@@ -1,19 +1,22 @@
 ---
-title: Create an emoji picker modal
+title: Create a modal
 ---
 
 import SnackInline from '~/components/plugins/SnackInline';
 import ImageSpotlight from '~/components/plugins/ImageSpotlight';
+import Video from '~/components/plugins/Video';
 
 React Native provides a [`Modal` component](https://reactnative.dev/docs/modal) that is used to present the content above an underlying view. In general, Modals are used to draw a user's attention toward some critical information or guide them to take an action to trigger the next step in an ongoing process.
 
-A modal can be the new view that disables the previous or the underlying view and covers up the whole screen or a certain amount percentage of the screen. In this module, let's create a modal that shows an emoji picker. The contents of this component are only going to take 25% of the screen.
+A modal can be the new view that disables the previous or the underlying view and covers up the whole screen or a certain amount percentage of the screen. In this module, let's create a modal that shows an emoji picker list.
 
 ## Step 1: Declare a state variable to show buttons
 
-Before implementing the modal, you have to direct the app screen to display the button to trigger the modal. This button is only visible when the user has picked an image from the media library or they have decided to use the placeholder image. So, let's implement a circle button that will be visible when the user has decided which image they want to use.
+Before implementing the modal, you have to direct the app screen to display the button to trigger the modal. These buttons are only visible when the user has picked an image from the media library or they have decided to use the placeholder image.
 
-Start by declaring a state variable called `showAppOptions` in the `App` component. This variable will be used to show or hide buttons to open the modal and a few other options. The value of this variable is a boolean and by default, when the app screen loads, it is set to `false` so that the options are not shown before picking an image.
+Declare a state variable called `showAppOptions` in the **App.js** file. This variable will be used to show or hide buttons to open the modal and a few other options.
+
+The value of this variable is a boolean and by default, when the app screen loads, it is set to `false` so that the options are not shown before picking an image.
 
 ```js
 export default function App() {
@@ -103,11 +106,11 @@ For now, an empty `View` component is rendered when the value of `showAppOptions
 
 The layout of the option buttons you are going to implement in this section looks like this:
 
-<ImageSpotlight alt="Break down of the layout of the buttons row." src="/static/images/tutorial/buttons-layout.jpg" style={{ maxWidth: 480 }} containerStyle={{ marginBottom: 0 }} />
+<ImageSpotlight alt="Break down of the layout of the buttons row." src="/static/images/tutorial/buttons-layout.jpg" style={{ maxWidth: 400 }} containerStyle={{ marginBottom: 0 }} />
 
 It contains a parent `View` that contains three buttons aligned in a row. The button in middle with the plus icon (+) will be used to open the model and is styled differently than the other two buttons.
 
-Inside the `components` folder, start by creating a new file called **CircleButton.js** with the following code snippet:
+Inside the **components** folder, start by creating a new file called **CircleButton.js** with the following code snippet:
 
 ```js
 import { View, Pressable, StyleSheet } from 'react-native';
@@ -148,14 +151,17 @@ const styles = StyleSheet.create({
 
 It uses the `MaterialIcons` icon set from `@expo/vector-icons` library to render the plus icon.
 
-The other two buttons only show a text label and an icon aligned vertically. Let's create a reusable function component for them inside **components/IconButton.js**. This component accepts three props:
+The other two buttons also use the same icon set to show a text label and an icon vertically aligned. Let's create a reusable function component for them inside **components/IconButton.js**. This component accepts three props:
 
 - `icon`: the name of the icon to be displayed that corresponds to the icon name in `MaterialIcons` library.
 - `label`: the text label to be displayed on the button.
 - `onPressHandler`: the function to be called when the button is pressed.
 
 ```js
-function IconButton({ icon, label, onPressHandler }) {
+import { Pressable, StyleSheet, Text } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
+export default function IconButton({ icon, label, onPressHandler }) {
   return (
     <Pressable style={styles.iconButton} onPress={onPressHandler}>
       <MaterialIcons name={icon} size={24} color="#fff" />
@@ -163,20 +169,31 @@ function IconButton({ icon, label, onPressHandler }) {
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  iconButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconButtonLabel: {
+    color: '#fff',
+    marginTop: 12,
+  },
+});
 ```
 
-To display these buttons, import them in **App.js** and replace the empty `View` component from the previous step. Let's also create the handler methods for these buttons.
+To display these buttons, import them in **App.js** and replace the empty `View` component from the previous step. Let's also create the handler methods for these buttons so that you can add the functionality later on.
 
 <SnackInline
 label="Add Button options"
-templateId="tutorial/module-modal/App"
+templateId="tutorial/03-button-options/App"
 dependencies={['expo-image-picker', '@expo/vector-icons/FontAwesome', '@expo/vector-icons', 'expo-status-bar', '@expo/vector-icons/MaterialIcons']}
 files={{
   'assets/images/background-image.png': 'https://snack-code-uploads.s3.us-west-1.amazonaws.com/~asset/503001f14bb7b8fe48a4e318ad07e910',
-  'components/ImageViewer.js': 'tutorial/module-image-picker/ImageViewer.js',
-  'components/Button.js': 'tutorial/module-modal/Button.js',
-  'components/CircleButton.js': 'tutorial/module-modal/CircleButton.js',
-  'components/IconButton.js': 'tutorial/module-modal/IconButton.js',
+  'components/ImageViewer.js': 'tutorial/02-image-picker/ImageViewer.js',
+  'components/Button.js': 'tutorial/03-button-options/Button.js',
+  'components/CircleButton.js': 'tutorial/03-button-options/CircleButton.js',
+  'components/IconButton.js': 'tutorial/03-button-options/IconButton.js',
 }}>
 
 <!-- prettier-ignore -->
@@ -243,9 +260,13 @@ const styles = StyleSheet.create({
 
 In the above snippet, the `resetHandler()` method is called when the user presses the reset button. When this button is pressed, the user is shown the image picker button again.
 
+On running the app, you will get similar results:
+
+<ImageSpotlight alt="Button options displayed after a image is selected." src="/static/images/tutorial/button-options.jpg" style={{ maxWidth: 720 }} containerStyle={{ marginBottom: 0 }} />
+
 ## Step 3: Create an emoji picker modal
 
-The next step is to create a modal that allows the user to choose an emoji from the list of available emoji. Let's create a component for this modal inside **components/EmojiPicker.js**. This component accepts three props:
+The modal allows the user to choose an emoji from the list of available emoji. Let's create the **EmojiPicker.js** file inside **components/**. This component accepts three props:
 
 - `modalVisible` is a boolean value that determines whether the modal is visible or not. It's a state variable that is created in the `App` component to keep track of the modal's visibility.
 - `onClose` is the handler function to be called when the user closes the modal.
@@ -256,7 +277,7 @@ The next step is to create a modal that allows the user to choose an emoji from 
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function EmojiPicker({ modalVisible, imageSize, onClose }) {
+export default function EmojiPicker({ modalVisible, children, onClose }) {
   return (
     <Modal animationType="slide" transparent={true} visible={modalVisible}>
       <View style={styles.modalContent}>
@@ -266,14 +287,14 @@ export default function EmojiPicker({ modalVisible, imageSize, onClose }) {
             <MaterialIcons name="close" color="#fff" size={22} />
           </Pressable>
         </View>        
+        {children}
       </View>
-      {children}
     </Modal>
   );
 }
 ```
 
-The `Modal` component from React Native currently displays a title and a close button. The `visible` prop takes the value of the `modalVisible`. The `transparent` prop on the component is a boolean value that determines whether the modal fills the entire view. Since the Emoji Picker modal is displayed over 25% of the screen, you do not want to fill the entire view with a specific background color. Instead, the modal will use a transparent background.
+The `Modal` component currently displays a title and a close button. The `visible` prop takes the value of the `modalVisible`. The `transparent` prop on the component is a boolean value that determines whether the modal fills the entire view. Since the emoji picker is displayed over 25% of the screen, there is no need to fill the entire view with a specific background color. Instead, the modal uses a transparent background.
 
 The `animationType` prop determines the animation that the component uses for entering and leaving the screen. Lastly, the `onClose` prop is the handler function called when the user presses the close button used on the `Pressable` component.
 
@@ -315,29 +336,28 @@ const styles = StyleSheet.create({
 });
 ```
 
-Now, let's modify the `App` component:
+Now, let's modify the **App.js**:
 
-- Start by importing the `EmojiPicker` component.
+- Import the `EmojiPicker` component.
 - Then, create a `modalVisible` state variable using `useState` hook. It has a default value of `false` that determines that the modal is not visible by default.
 - Update the `modalVisibilityHandler` to update the `modalVisible` state variable.
 - Place the `EmojiPicker` component at the bottom of the JSX returned by `App` component.
 
 <SnackInline
 label="Create a modal"
-templateId="tutorial/module-create-modal/App"
+templateId="tutorial/04-modal/App"
 dependencies={['expo-image-picker', '@expo/vector-icons/FontAwesome', '@expo/vector-icons', 'expo-status-bar', '@expo/vector-icons/MaterialIcons']}
 files={{
   'assets/images/background-image.png': 'https://snack-code-uploads.s3.us-west-1.amazonaws.com/~asset/503001f14bb7b8fe48a4e318ad07e910',
-  'components/ImageViewer.js': 'tutorial/module-image-picker/ImageViewer.js',
-  'components/Button.js': 'tutorial/module-modal/Button.js',
-  'components/CircleButton.js': 'tutorial/module-modal/CircleButton.js',
-  'components/IconButton.js': 'tutorial/module-modal/IconButton.js',
-  'components/EmojiPicker.js': 'tutorial/module-create-modal/EmojiPicker.js',
+  'components/ImageViewer.js': 'tutorial/02-image-picker/ImageViewer.js',
+  'components/Button.js': 'tutorial/03-button-options/Button.js',
+  'components/CircleButton.js': 'tutorial/03-button-options/CircleButton.js',
+  'components/IconButton.js': 'tutorial/03-button-options/IconButton.js',
+  'components/EmojiPicker.js': 'tutorial/04-modal/EmojiPicker.js',
 }}>
 
 <!-- prettier-ignore -->
 ```js
-// ...previous code remains unchanged
 import EmojiPicker from "./components/EmojiPicker";
 
 
@@ -390,15 +410,17 @@ export default function App() {
 
 Here is the output after this step:
 
-<ImageSpotlight alt="A modal working on all platforms" src="/static/images/tutorial/create-modal.jpg" style={{ maxWidth: 720 }} containerStyle={{ marginBottom: 0 }} />
+<ImageSpotlight alt="A modal working on all platforms" src="/static/images/tutorial/modal-creation.jpg" style={{ maxWidth: 720 }} containerStyle={{ marginBottom: 0 }} />
 
 ## Step 4: Display a list of emoji
 
-The next step is to display emoji as a list of stickers in the modal's content. This component uses a [`FlatList` from React Native](https://reactnative.dev/docs/flatlist) to display a horizontal list of emoji in the modal.
+In this step, let's implement a list of emoji in the modal's content. The list component uses a [`FlatList` from React Native](https://reactnative.dev/docs/flatlist) to display a horizontal list of emoji.
 
-Our designers have provided us with six emoji images to render them as a list. Download all of these assets from this GitHub repo and then save the image files inside the **assets/images/** folder.
+Our designers have provided us with six emoji images to render them as a list. Download all of these assets from this [GitHub repo] and then save the image files inside the **assets/images/** folder.
 
-After you saved them, create a new component file: **components/EmojiList.js** and add the following code snippet:
+> **Tip**: If you cloned the repository when initializing the app, all assets are available in the **assets/** folder.
+
+After you save them, create the **EmojiList.js** file in the **components** folder and add the following code snippet:
 
 <!-- prettier-ignore -->
 ```js
@@ -455,7 +477,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-The `FlatList` component above renders all the emoji images using an `Image` component wrapped with a `Pressable`. This is because, later, we will implement the functionality where the user can tap an emoji on the screen to select and that selected emoji will appear as a sticker on the placeholder image.
+The `FlatList` component in the above snippet, renders all the emoji images using an `Image` component wrapped with a `Pressable`. This is because, later, we will implement the functionality where the user can tap an emoji on the screen to select and that selected emoji will appear as a sticker on the placeholder image.
 
 The `FlatList` component takes an array of items which in the above snippet is provided by the `emoji` array variable as the value of `data` prop. Then, the `renderItem` takes the item from the `data` and returns the item in the list. You can write your own JSX to however you want to display this item and that is what is being done using the `Image` and the `Pressable` components.
 
@@ -487,13 +509,13 @@ export default function App() {
 }
 ```
 
-Here is the output you will get after this step:
+On running the app, you will get a similar output on all platforms:
 
-<ImageSpotlight alt="List of emojis shown using the FlatList component." src="/static/images/tutorial/list-emoji.jpg" style={{ maxWidth: 720 }} containerStyle={{ marginBottom: 0 }} />
+<ImageSpotlight alt="List of emojis shown using the FlatList component." src="/static/images/tutorial/emoji-list.jpg" style={{ maxWidth: 720 }} containerStyle={{ marginBottom: 0 }} />
 
 ## Step 5: Display the selected emoji
 
-Now, let's add the code snippet to the `App` component to display the selected emoji on the background or placeholder image.
+Now, let's add the code snippet to the **App.js** file to display the selected emoji on the background or placeholder image.
 
 Start by creating a new component file: **components/EmojiSticker.js** and add the following code snippet. This component receives two props:
 
@@ -526,11 +548,11 @@ import EmojiSticker from './components/EmojiSticker';
 const SIZE = 40;
 ```
 
-Then, update the `App` component to conditionally display the sticker on the placeholder image. This is done by checking if the `pickedEmoji` state variable is not null. If it is not null, then this variable refers to the source of the sticker image.
+Then, update the `App` component to conditionally display the emoji on the placeholder image. This is done by checking if the `pickedEmoji` state variable is not null. If it is not null, then this variable refers to the source of the emoji image.
 
 <SnackInline
 label="Display selected emoji sticker"
-templateId="tutorial/module-selected-emoji/App"
+templateId="tutorial/05-emoji-list/App"
 dependencies={['expo-image-picker', '@expo/vector-icons/FontAwesome', '@expo/vector-icons', 'expo-status-bar', '@expo/vector-icons/MaterialIcons']}
 files={{
   'assets/images/background-image.png': 'https://snack-code-uploads.s3.us-west-1.amazonaws.com/~asset/503001f14bb7b8fe48a4e318ad07e910',
@@ -540,13 +562,13 @@ files={{
   'assets/images/emoji4.png': 'https://snack-code-uploads.s3.us-west-1.amazonaws.com/~asset/ac2163b98a973cb50bfb716cc4438f9a',
   'assets/images/emoji5.png': 'https://snack-code-uploads.s3.us-west-1.amazonaws.com/~asset/9cc0e2ff664bae3af766b9750331c3ad',
   'assets/images/emoji6.png': 'https://snack-code-uploads.s3.us-west-1.amazonaws.com/~asset/ce614cf0928157b3f7daa3cb8e7bd486',
-  'components/ImageViewer.js': 'tutorial/module-image-picker/ImageViewer.js',
-  'components/Button.js': 'tutorial/module-modal/Button.js',
-  'components/CircleButton.js': 'tutorial/module-modal/CircleButton.js',
-  'components/IconButton.js': 'tutorial/module-modal/IconButton.js',
-  'components/EmojiPicker.js': 'tutorial/module-create-modal/EmojiPicker.js',
-  'components/EmojiList.js': 'tutorial/module-create-modal/EmojiList.js',
-  'components/EmojiSticker.js': 'tutorial/module-selected-emoji/EmojiSticker.js',
+  'components/ImageViewer.js': 'tutorial/02-image-picker/ImageViewer.js',
+  'components/Button.js': 'tutorial/03-button-options/Button.js',
+  'components/CircleButton.js': 'tutorial/03-button-options/CircleButton.js',
+  'components/IconButton.js': 'tutorial/03-button-options/IconButton.js',
+  'components/EmojiPicker.js': 'tutorial/04-modal/EmojiPicker.js',
+  'components/EmojiList.js': 'tutorial/05-emoji-list/EmojiList.js',
+  'components/EmojiSticker.js': 'tutorial/05-emoji-list/EmojiSticker.js',
 }}>
 
 <!-- prettier-ignore -->
@@ -566,10 +588,12 @@ export default function App() {
 
 </SnackInline>
 
-Here is the output after this step:
+On running the app, you will get a similar output on all platforms:
 
-<ImageSpotlight alt="Emoji Sticker displayed on the image." src="/static/images/tutorial/emoji-sticker.jpg" style={{ maxWidth: 720 }} containerStyle={{ marginBottom: 0 }} />
+<Video file="tutorial/select-emoji.mp4" />
 
 ## Up next
 
-You have successfully created the emoji picker modal and implemented the business logic to select an emoji and display it over the image. In the next step, let's add user interactions using gestures to drag the emoji and scale the size by tapping it.
+You have successfully created the emoji picker modal and implemented the business logic to select an emoji and display it over the image.
+
+In the next step, let's add [user interactions using gestures](/tutorial/gestures) to drag the emoji and scale the size by tapping it.

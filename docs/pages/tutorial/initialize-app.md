@@ -8,12 +8,12 @@ import ImageSpotlight from '~/components/plugins/ImageSpotlight';
 
 In this module, let's learn how to create a new Expo project and explore the app.
 
-## Step 0: Prerequisites
+## Prerequisites
 
 Before you get started, this tutorial assumes that you:
 
-- Have already installed the [Expo Go](https://expo.dev/client) app on your physical device
-- Have gone through the [requirements under Installation](https://docs.expo.dev/get-started/installation/#requirements) to set up your development environment
+- Have already installed the [Expo Go](https://expo.dev/client) app on your physical device.
+- Have gone through the [requirements under Installation](https://docs.expo.dev/get-started/installation/#requirements) to set up your development environment.
 
 This tutorial also assumes that you have basic knowledge of JavaScript and React or React Native. If you have never written React code, go through [the official React tutorial](https://reactjs.org/tutorial/tutorial.html) first. For more resources, see [additional resources](https://docs.expo.dev/next-steps/additional-resources/).
 
@@ -24,7 +24,7 @@ For this tutorial, we provide two different ways to get started:
 - [Clone the repository](#clone-the-repository)
 - [Manually initialize with `create-expo-app`](#manually-initialize-with-create-expo-app)
 
-Whichever way you choose to initialize the app, open the repository in your favorite IDE. We're using Visual Studio Code for our examples.
+Choose a way to initialize your app and after initializing it, open the project repository in your favorite code editor or IDE. Throughout this tutorial, we are using VS Code for our examples.
 
 ### Clone the repository
 
@@ -34,7 +34,7 @@ In the directory of your choice with your preferred terminal, clone the app's st
 
 The repository you are cloning comes with all the dependencies required to build and run the app pre-installed.
 
-### Manually initialize with `create-expo-app`
+### Alternate: manually initialize with `create-expo-app`
 
 In the directory of your choice with your preferred terminal, run the following command to initialize a new project:
 
@@ -50,9 +50,9 @@ This command will create a new directory for the project with the name: **Sticke
 
 ## Step 2: Run the app on mobile
 
-Whichever way you choose to initialize the app, make sure to navigate inside the project directory in your terminal window before proceeding.
+When you have initialized the app, make sure to navigate inside the project directory in your terminal window.
 
-After navigating inside the project directory, run the command to trigger the [development server](/guides/how-expo-works/#expo-development-server) and see the bare-bones app in action:
+After navigating inside the project directory, run the following command to trigger the [development server](/guides/how-expo-works/#expo-development-server) and see the bare-bones app in action:
 
 <Terminal cmd={['$ npx expo start']} />
 
@@ -70,12 +70,12 @@ When you create a new project with `create-expo-app`, it uses the default [blank
 
 <Terminal cmd={['$ npx expo install react-native-web@~0.18.7 react-dom@18.0.0 @expo/webpack-config@^0.17.0']} />
 
-Before running the above installation command, make sure to terminate `npx expo start` if it is already running the development server. After installing the dependencies, run the development server again. To see the web app in action, press <kbd>W</kbd> in the terminal window. It will open the web app in your default web browser at the URL: `http://localhost:19006/`.
+Before running the above installation command, make sure to terminate `npx expo start` if it is already running the development server. After installing the dependencies, run the development server again. To see the web app in action, press <kbd>W</kbd> in the terminal window. It will open the web app in your default web browser at a specific URL.
 
 <ImageSpotlight alt="App running on an all platforms" src="/static/images/tutorial/app-running-on-all-platforms.jpg" style={{maxWidth: 720}} />
 
-## Up next
+## Next steps
 
-You have now set up an application in the local environment and launched it. The next step is to learn how to build a layout for your app.
+You have now set up an application in the local environment and launched it. The next step is to learn [how to build the first layout of the app](/tutorial/layout).
 
 If you have any trouble in this module, refer back to the [Create a new app](/get-started/create-a-new-app/). If you have trouble opening the app on the device of your choice, refer to the [Opening the app on your phone/tablet](/get-started/create-a-new-app/#opening-the-app-on-your-phonetablet) section.
