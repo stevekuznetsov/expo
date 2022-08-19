@@ -40,7 +40,7 @@ public class EXDevLauncherUncaughtExceptionHandler: NSObject {
   static func tryToSendExceptionToBundler(_ exception: NSException) {
     let controller = EXDevLauncherController.sharedInstance()
     if (controller.isAppRunning()) {
-      guard let url = getLogsUrl(controller) else {
+      guard let url = getWebSocketUrl(controller) else {
         return
       }
       
@@ -50,18 +50,12 @@ public class EXDevLauncherUncaughtExceptionHandler: NSObject {
       logsManager.sendSync()
     }
   }
-  
-  static func getLogsUrl(_ controller: EXDevLauncherController) -> URL? {
-    let logsUrlFromManifest = controller.appManifest()?.logUrl()
-    if (logsUrlFromManifest != nil) {
-      return URL.init(string: logsUrlFromManifest!)
-    }
-    
+
+  static func getWebSocketUrl(_ controller: EXDevLauncherController) -> URL? {
     guard let appUrl = controller.appBridge?.bundleURL else {
       return nil
     }
-    
-    return URL.init(string: "logs", relativeTo: appUrl)
+    return URL.init(string: "hot", relativeTo: appUrl)
   }
   
   static func tryToSaveException(_ exception: NSException) {
